@@ -40,5 +40,4 @@ BLOG
 TO DO
 ---
 
-- GitHub library for easy use of the board 
 - 3D model of a shell to protect the board
