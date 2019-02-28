@@ -1,9 +1,9 @@
 Overview
 ---
 
-This board is design to fit on a raspberry and permit multiple features. It main use is for prototyping since the board is large. This is work in progress, i will update the openhardware web page when i could.
+This board is design to fit on a raspberry and permit multiple features. It main use is for prototyping since the board is large.
 
-**Most of the features has been tested**
+**All the features has been tested**
 
 Github : https://github.com/NathanB49/Utilipi
 
