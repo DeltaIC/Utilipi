@@ -40,6 +40,8 @@ BLOG
 - **28/09/2018** : The hole size for connector is too thin, and routage will be update for allowing SPI without using IO extender.
 - **30/10/2018** : The transistors, the IOExtender, the I2C and SPI voltage shift works well.
 - **31/10/2018** : I've redesign the board according to the mistake i've found. Also, a library from ABElectronic use the IOextender and ease it use. [https://github.com/abelectronicsuk/ABElectronics_Python_Libraries/tree/master/IOPi]
+- **25/02/2019** : Add the Github, multiple corrections in the PCB incoming with v2.2
+- **28/02/2019** : New version 2.2, add the source code on github
 
 TO DO
 ---
