@@ -15,22 +15,9 @@ This example uses the write_pin and write_port methods to switch the pins
 on and off on the I/O bus.
 
 """
-from __future__ import absolute_import, division, print_function, \
-                                                    unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 import time
-
-try:
-    from MCP23017 import MCP23017
-except ImportError:
-    print("Failed to import MCP23017 from python system path")
-    print("Importing from parent folder instead")
-    try:
-        import sys
-        sys.path.append('..')
-        from MCP23017 import MCP23017
-    except ImportError:
-        raise ImportError(
-            "Failed to import library from parent folder")
+from MCP23017 import MCP23017
 
 
 def main():

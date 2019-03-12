@@ -20,7 +20,7 @@ import re
 import platform
 
 
-class IOPi(object):
+class MCP23017(object):
     """
     The MCP23017 chip is split into two 8-bit ports.  port 0 controls pins
     1 to 8 while port 1 controls pins 9 to 16.
