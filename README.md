@@ -29,6 +29,7 @@ There is 4 channel directly connected to the raspberry. Unlike the others, they 
 
 #### POWER
 The board can be powered by raspberry (remove the jumper JP1) or it can be powered by external supply (max 36V).
+This module works also : https://fr.aliexpress.com/item/mini-DC-DC-Converter-Step-Down-buck-Power-Supply-Module-for-Flight-Control-Car/2038556858.html?spm=a2g0s.9042311.0.0.5bf36c37EOK96X
 
 BLOG
 ---
