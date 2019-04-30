@@ -1,7 +1,7 @@
 Overview
 ---
 
-This board is design to fit on a raspberry and permit multiple features. It main use is for prototyping since the board is large.
+This board is design to fit on a raspberry and permit multiple features. It also have an embedded nrf52832 to allow real time process. The board can be in stand alone with only the nrf52.
 
 **All the features has been tested**
 
@@ -13,7 +13,7 @@ Features
 ---
 
 #### IO EXTENDER
-There is 32 channels I/O included 8 which can work with interrupt service thank to an I/O expender on I²C bus.
+There is 32 channels I/O included 16 which can work with interrupt service thank to an I/O expender on I²C bus.
 
 #### ADC
 The Analog to Digital Converter have 4 channel 10V max and 4 channel with input selection. The input selection works either for 10V max or 4-20mA loop.
@@ -29,6 +29,7 @@ There is 4 channel directly connected to the raspberry. Unlike the others, they 
 
 #### POWER
 The board can be powered by raspberry (remove the jumper JP1) or it can be powered by external supply (max 36V).
+This module also works : https://fr.aliexpress.com/item/mini-DC-DC-Converter-Step-Down-buck-Power-Supply-Module-for-Flight-Control-Car/2038556858.html?spm=a2g0s.9042311.0.0.5bf36c37EOK96X
 
 BLOG
 ---
@@ -42,6 +43,7 @@ BLOG
 - **31/10/2018** : I've redesign the board according to the mistake i've found. Also, a library from ABElectronic use the IOextender and ease it use. [https://github.com/abelectronicsuk/ABElectronics_Python_Libraries/tree/master/IOPi]
 - **25/02/2019** : Add the Github, multiple corrections in the PCB incoming with v2.2
 - **28/02/2019** : New version 2.2, add the source code on github
+- **29/04/2019** : New version 2.3, add the source code on github. Add the nrf52 to the board.
 
 TO DO
 ---
