@@ -53,8 +53,8 @@ extern "C"
 // Number of pins defined in PinDescription array
 #define PINS_COUNT           (32u)
 #define NUM_DIGITAL_PINS     (32u)
-//#define NUM_ANALOG_INPUTS    (8u)
-//#define NUM_ANALOG_OUTPUTS   (8u)
+#define NUM_ANALOG_INPUTS    (8u)
+#define NUM_ANALOG_OUTPUTS   (8u)
 
 /* 
  *  LEDs
@@ -67,9 +67,9 @@ extern "C"
  *  https://github.com/mysensors/MySensors/blob/development/drivers/NRF5/nrf5_wiring_constants.h
  *
  */
-#define LED1                (20)
-#define LED2                (19)
-#define LED_BUILTIN          LED1
+#define PIN_LED1                (20)
+#define PIN_LED2                (19)
+#define LED_BUILTIN          PIN_LED1
 
 
 /* 
@@ -84,14 +84,14 @@ extern "C"
  *
  */
 
-#define T1                (4)
-#define T2                (3)
-#define T3                (2)
-#define T4                (31)
-#define T5                (30)
-#define T6                (29)
-#define T7                (28)
-#define T8                (27)
+#define PIN_T1                (4)
+#define PIN_T2                (3)
+#define PIN_T3                (2)
+#define PIN_T4                (31)
+#define PIN_T5                (30)
+#define PIN_T6                (29)
+#define PIN_T7                (28)
+#define PIN_T8                (27)
 
 /* 
  *  To RPI OUTPUT
@@ -105,19 +105,19 @@ extern "C"
  *
  */
 
-#define RPI1              (26)
-#define RPI2              (25)
-#define RPI3              (24)
-#define RPI4              (23)
-#define RPI_INT1          (7)
-#define RPI_INT2          (8)
+#define PIN_RPI1              (26)
+#define PIN_RPI2              (25)
+#define PIN_RPI3              (24)
+#define PIN_RPI4              (23)
+#define PIN_RPI_INT1          (7)
+#define PIN_RPI_INT2          (8)
 
 /* 
  *  Buttons
  *  
  *  This is optional
  */
-#define BUTTON1             (22)
+#define PIN_BUTTON1             (22)
 
 /* 
  * Analog ports
@@ -145,8 +145,8 @@ static const uint8_t A7  = ADC_A7;*/
  * If you have no serial port, use unused pins
  * CTS and RTS are optional.
  */
-#define SERIAL_RX       (17)
-#define SERIAL_TX       (18)
+#define PIN_SERIAL_RX       (17)
+#define PIN_SERIAL_TX       (18)
 // #define SERIAL_CTS      (13)
 // #define SERIAL_RTS      (14)
 
@@ -160,39 +160,39 @@ static const uint8_t A7  = ADC_A7;*/
  */
 #define SPI_INTERFACES_COUNT 1
 
-#define SPI_MISO         (11)
-#define SPI_MOSI         (10)
-#define SPI_SCK          (5)
-#define SPI_CE1          (16)
-#define SPI_CE2          (15)
-#define SPI_CE3          (9)
-#define SPI_CE4          (12)
-#define SPI_CE_ADC       (6)
+#define PIN_SPI_MISO         (11)
+#define PIN_SPI_MOSI         (10)
+#define PIN_SPI_SCK          (5)
+#define PIN_SPI_CE1          (16)
+#define PIN_SPI_CE2          (15)
+#define PIN_SPI_CE3          (9)
+#define PIN_SPI_CE4          (12)
+#define PIN_SPI_CE_ADC       (6)
 
-static const uint8_t CE1    = SPI_CE1;
-static const uint8_t CE2    = SPI_CE2;
-static const uint8_t CE3    = SPI_CE3;
-static const uint8_t CE4    = SPI_CE4;
-static const uint8_t CE_ADC = SPI_CE_ADC;
-static const uint8_t MOSI   = SPI_MOSI;
-static const uint8_t MISO   = SPI_MISO;
-static const uint8_t SCK    = SPI_SCK;
+static const uint8_t CE1    = PIN_SPI_CE1;
+static const uint8_t CE2    = PIN_SPI_CE2;
+static const uint8_t CE3    = PIN_SPI_CE3;
+static const uint8_t CE4    = PIN_SPI_CE4;
+static const uint8_t CE_ADC = PIN_SPI_CE_ADC;
+static const uint8_t MOSI   = PIN_SPI_MOSI;
+static const uint8_t MISO   = PIN_SPI_MISO;
+static const uint8_t SCK    = PIN_SPI_SCK;
 
 /*
  * Wire Interfaces
  *
  * This is optional
  */
-#define WIRE_INTERFACES_COUNT 2
+#define WIRE_INTERFACES_COUNT 1
 
-#define WIRE_SDA         (14u)
-#define WIRE_SCL         (13u)
+#define PIN_WIRE_SDA         (14u)
+#define PIN_WIRE_SCL         (13u)
 
 //#define WIRE_SDA1        (16u)
 //#define WIRE_SCL1        (17u)
 
-static const uint8_t SDA = WIRE_SDA;
-static const uint8_t SCL = WIRE_SCL;
+static const uint8_t SDA = PIN_WIRE_SDA;
+static const uint8_t SCL = PIN_WIRE_SCL;
 
 #ifdef __cplusplus
 }
