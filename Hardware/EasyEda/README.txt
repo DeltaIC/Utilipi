@@ -1,4 +1,7 @@
-UtiliPi            
+UtiliPi
+
+Github : https://github.com/NathanB49/Utilipi
+Openhardware.io : https://www.openhardware.io/view/618/UtiliPi            
 How to use：
 
 At editor, Click the document icon on the topbar, via "Document" > "Open" > "EasyEDA Source", and select json file, then open it at the editor.
