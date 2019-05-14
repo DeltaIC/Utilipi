@@ -4,172 +4,83 @@
 
 #define MY_RADIO_NRF5_ESB
 
-// Enable passive mode
-#define MY_PASSIVE_NODE
+#define MY_RF24_PA_LEVEL RF24_PA_MAX
 
-// Passive mode requires static node ID
-#define MY_NODE_ID 100
+#define MY_NODE_ID 11
 
 #include <MySensors.h>
+#include <BH1750.h>
+#include <Wire.h> 
 
-#define CHILD_ID 0   // Id of the sensor child
-
-// Initialize general message
-MyMessage msg(CHILD_ID, V_TEMP);
-
+int RELAY_PIN[] = {PIN_T1,PIN_T2,PIN_T3,PIN_T4,PIN_T5,PIN_T6,PIN_T7,PIN_T8};
+#define NUMBER_OF_RELAYS 8 // Total number of attached relays
+#define RELAY_ON 0  // GPIO value to write to turn on attached relay
+#define RELAY_OFF 1 // GPIO value to write to turn off attached relay
+#define CHILD_ID_LIGHT 20
+BH1750 lightSensor;
 int i;
 
-// Initialize general message
+MyMessage msg(CHILD_ID_LIGHT, V_LIGHT_LEVEL);
+// MyMessage msg(CHILD_ID_LIGHT, V_LEVEL);  
+uint16_t lastlux;
 
+// Initialize general message
+void before()
+{
+  for (int sensor=1, pin=0; sensor<=NUMBER_OF_RELAYS; sensor++, pin++) {
+    // Then set relay pins in output mode
+    hwPinMode(RELAY_PIN[pin], OUTPUT_H0H1);
+    //pinMode(RELAY_PIN[pin], OUTPUT);
+    // Set relay to last known state (using eeprom storage)
+    digitalWrite(RELAY_PIN[pin], loadState(sensor)?RELAY_ON:RELAY_OFF);
+  }
+  pinMode(LED_BUILTIN, OUTPUT);
+}
 
 void setup()
 {
-  /*for(i=2;i++;i<31){
-    if (i!=21) {pinMode(i, OUTPUT);}
-    
-  }*/
-  pinMode(PIN_LED1, OUTPUT);
-  pinMode(PIN_LED2, OUTPUT);
+  Wire.begin();
+  lightSensor.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
   
-  pinMode(PIN_T1, OUTPUT);
-  pinMode(PIN_T2, OUTPUT);
-  pinMode(PIN_T3, OUTPUT);
-  pinMode(PIN_T4, OUTPUT);
-  pinMode(PIN_T5, OUTPUT);
-  pinMode(PIN_T6, OUTPUT);
-  pinMode(PIN_T7, OUTPUT);
-  pinMode(PIN_T8, OUTPUT);
-
-  digitalWrite(PIN_T1, LOW);
-  digitalWrite(PIN_T2, LOW);
-  digitalWrite(PIN_T3, HIGH);
-  digitalWrite(PIN_T4, HIGH);
-  digitalWrite(PIN_T5, HIGH);
-  digitalWrite(PIN_T6, HIGH);
-  digitalWrite(PIN_T7, HIGH);
-  digitalWrite(PIN_T8, HIGH);
-  digitalWrite(PIN_LED1, HIGH);
-  digitalWrite(PIN_LED2, HIGH);
-  /*digitalWrite(PIN_T2, LOW);
-  digitalWrite(PIN_T3, LOW);
-  digitalWrite(PIN_T4, LOW);
-  digitalWrite(PIN_T5, LOW);
-  digitalWrite(PIN_T6, LOW);
-  digitalWrite(PIN_T7, LOW);
-  digitalWrite(PIN_T8, LOW);
-  digitalWrite(PIN_LED1, LOW);
-  digitalWrite(PIN_LED2, LOW);*/
-
-  delay(3000);
-
-  //digitalWrite(PIN_T1, HIGH);
-
-/*
-  pinMode(PIN_SERIAL_RX, OUTPUT);
-  pinMode(PIN_SERIAL_TX, OUTPUT);
-
-  pinMode(MISO, OUTPUT);
-  pinMode(MOSI, OUTPUT);
-  pinMode(SCK, OUTPUT);
-  pinMode(CE1,OUTPUT);
-  pinMode(CE2,OUTPUT);
-  pinMode(CE3,OUTPUT);
-  pinMode(CE4,OUTPUT);
-  pinMode(CE_ADC,OUTPUT);
-
-  pinMode(SDA,OUTPUT);
-  pinMode(SCL,OUTPUT);
-
-  pinMode(PIN_RPI1,OUTPUT);
-  pinMode(PIN_RPI2,OUTPUT);
-  pinMode(PIN_RPI3,OUTPUT);
-  pinMode(PIN_RPI4,OUTPUT);
-  pinMode(PIN_RPI_INT1, OUTPUT);
-  pinMode(PIN_RPI_INT2,OUTPUT);*/
+  digitalWrite(LED_BUILTIN,LOW);
 }
 
 void presentation()
 {
-  // Send the sketch version information to the gateway and controller
-  sendSketchInfo("Passive node", "1.0");
+  // Send the sketch version information to the gateway and Controller
+  sendSketchInfo("Utilipy", "0.3");
 
-  // Register all sensors to gw (they will be created as child devices)
-  present(CHILD_ID, S_TEMP);
+  for (int sensor=1, pin=0; sensor<=NUMBER_OF_RELAYS; sensor++, pin++) {
+    // Register all sensors to gw (they will be created as child devices)
+    present(sensor, S_BINARY);
+  }
+  present(CHILD_ID_LIGHT, S_LIGHT_LEVEL);
 }
 
 void loop()
 {
-  
-  // generate some random data
-  send(msg.set(25.0+random(0,30)/10.0,2));
-  digitalWrite(PIN_LED1, LOW);
-  digitalWrite(PIN_LED2, LOW);
-  digitalWrite(PIN_T1, HIGH);
-  
-  
-  /*digitalWrite(PIN_SERIAL_RX, LOW);
-  digitalWrite(PIN_SERIAL_TX, LOW);
-  
-  digitalWrite(MOSI, LOW);
-  digitalWrite(MISO, LOW);
-  digitalWrite(SCK, LOW);
-  digitalWrite(CE1, LOW);
-  digitalWrite(CE2, LOW);
-  digitalWrite(CE3, LOW);
-  digitalWrite(CE4, LOW);
-  digitalWrite(CE_ADC, LOW);
-  
-  digitalWrite(SDA, LOW);
-  digitalWrite(SCL, LOW);
+  uint16_t lux = lightSensor.readLightLevel();// Get Lux value
+  if (lux != lastlux) {
+      Serial.println(lux);
+      send(msg.set(lux));
+      lastlux = lux;
+  }
 
-  digitalWrite(PIN_RPI1, LOW);
-  digitalWrite(PIN_RPI2, LOW);
-  digitalWrite(PIN_RPI3, LOW);
-  digitalWrite(PIN_RPI4, LOW);
-  digitalWrite(PIN_RPI_INT1, LOW);
-  digitalWrite(PIN_RPI_INT2, LOW);*/
-  /*for(i=2;i++;i<31){
-    if (i!=21) {digitalWrite(i, LOW);}
-    
-  }*/
-  delay(1500);
-  /*for(i=2;i++;i<31){
-    if (i!=21) {digitalWrite(i, HIGH);}
-    
-  }*/
-  digitalWrite(PIN_LED1, HIGH); 
-  digitalWrite(PIN_LED2, HIGH);
-  digitalWrite(PIN_T1, LOW);
-  
-  /*digitalWrite(PIN_T1, HIGH);
-  digitalWrite(PIN_T2, HIGH);
-  digitalWrite(PIN_T3, HIGH);
-  digitalWrite(PIN_T4, HIGH);
-  digitalWrite(PIN_T5, HIGH);
-  digitalWrite(PIN_T6, HIGH);
-  digitalWrite(PIN_T7, HIGH);
-  digitalWrite(PIN_T8, HIGH);
-  
-  digitalWrite(PIN_SERIAL_RX, HIGH);
-  digitalWrite(PIN_SERIAL_TX, HIGH);
-  
-  digitalWrite(MOSI, HIGH);
-  digitalWrite(MISO, HIGH);
-  digitalWrite(SCK, HIGH);
-  digitalWrite(CE1, HIGH);
-  digitalWrite(CE2, HIGH);
-  digitalWrite(CE3, HIGH);
-  digitalWrite(CE4, HIGH);
-  digitalWrite(CE_ADC, HIGH);
-  
-  digitalWrite(SDA, HIGH);
-  digitalWrite(SCL, HIGH);
+  delay(2000);
+}
 
-  digitalWrite(PIN_RPI1, HIGH);
-  digitalWrite(PIN_RPI2, HIGH);
-  digitalWrite(PIN_RPI3, HIGH);
-  digitalWrite(PIN_RPI4, HIGH);
-  digitalWrite(PIN_RPI_INT1, HIGH);
-  digitalWrite(PIN_RPI_INT2, HIGH);*/
-  delay(3000);
+void receive(const MyMessage &message)
+{
+  // We only expect one type of message from controller. But we better check anyway.
+  if (message.type==V_STATUS) {
+    // Change relay state
+    digitalWrite(RELAY_PIN[message.sensor-1], message.getBool()?RELAY_ON:RELAY_OFF);
+    // Store state in eeprom
+    saveState(message.sensor, message.getBool());
+    // Write some debug info
+    Serial.print("Incoming change for sensor:");
+    Serial.print(message.sensor);
+    Serial.print(", New status: ");
+    Serial.println(message.getBool());
+  }
 }
