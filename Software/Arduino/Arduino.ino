@@ -4,13 +4,16 @@
 
 #define MY_RADIO_NRF5_ESB
 
-#define MY_RF24_PA_LEVEL RF24_PA_MAX
+//#define MY_RF24_CHANNEL 96
+
+#define MY_RF24_PA_LEVEL RF24_PA_HIGH
 
 #define MY_NODE_ID 11
 
 #include <MySensors.h>
 #include <BH1750.h>
 #include <Wire.h> 
+#include "Adafruit_MCP23017.h"
 
 int RELAY_PIN[] = {PIN_T1,PIN_T2,PIN_T3,PIN_T4,PIN_T5,PIN_T6,PIN_T7,PIN_T8};
 #define NUMBER_OF_RELAYS 8 // Total number of attached relays
@@ -60,7 +63,7 @@ void presentation()
 void loop()
 {
   uint16_t lux = lightSensor.readLightLevel();// Get Lux value
-  if (lux != lastlux) {
+  if ((lux != lastlux) & (lux != 0)) {
       Serial.println(lux);
       send(msg.set(lux));
       lastlux = lux;
