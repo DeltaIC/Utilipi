@@ -57,5 +57,3 @@ TO DO
 - modify solder pad of the io extender (a little small)
 - Replace jumper for the ADC 
 - correct minor bug (Silkscreen)
-
-TEST
