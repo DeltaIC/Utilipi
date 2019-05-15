@@ -1,7 +1,11 @@
 Overview
 ---
+RPI and NRF for industrial application : 
+The board has 2 modes : 
+- RPI + NRF : RPI handles all the Features below, and you can add an NRF for extra real time event handling. 
+- NRF only : The NRF handles all the features below. You can use it with BLE or RF24. It is compatible with MYSENSORS also. 
 
-This board is design to fit on a raspberry and permit multiple features. It also have an embedded nrf52832 to allow real time process. The board can be in stand alone with only the nrf52.
+Supply voltage up to 24v
 
 **All the features has been tested**
 
@@ -48,6 +52,10 @@ BLOG
 TO DO
 ---
 
-- 3D model of a shell to protect the board
+- Change the NRF used (to small and need for external antenna connector)
+- Change 3V3 supply voltage
+- modify solder pad of the io extender (a little small)
+- Replace jumper for the ADC 
+- correct minor bug (Silkscreen)
 
 TEST
