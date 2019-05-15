@@ -5,7 +5,7 @@ This board is design to fit on a raspberry and permit multiple features. It also
 
 **All the features has been tested**
 
-Github : https://github.com/NathanB49/Utilipi
+Github : https://github.com/DeltaIC/Utilipi
 
 Openhardware.io : https://www.openhardware.io/view/618/UtiliPi
 
