@@ -9,7 +9,7 @@ Supply voltage up to 24v
 
 **All the features has been tested**
 
-Github : https://github.com/NathanB49/Utilipi
+Github : https://github.com/DeltaIC/Utilipi
 
 Openhardware.io : https://www.openhardware.io/view/618/UtiliPi
 
@@ -57,5 +57,3 @@ TO DO
 - modify solder pad of the io extender (a little small)
 - Replace jumper for the ADC 
 - correct minor bug (Silkscreen)
-
-TEST
