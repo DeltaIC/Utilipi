@@ -8,10 +8,10 @@
 
 #define MY_RF24_PA_LEVEL RF24_PA_HIGH
 
-#define MY_NODE_ID 11
+#define MY_NODE_ID 15
 
 #include <MySensors.h>
-#include <BH1750.h>
+//#include <BH1750.h>
 #include <Wire.h> 
 #include "Adafruit_MCP23017.h"
 
@@ -20,12 +20,23 @@ int RELAY_PIN[] = {PIN_T1,PIN_T2,PIN_T3,PIN_T4,PIN_T5,PIN_T6,PIN_T7,PIN_T8};
 #define RELAY_ON 0  // GPIO value to write to turn on attached relay
 #define RELAY_OFF 1 // GPIO value to write to turn off attached relay
 #define CHILD_ID_LIGHT 20
-BH1750 lightSensor;
+
+//BH1750 lightSensor;
+Adafruit_MCP23017 mcp1;
+
+#define mcpPinA 6
+#define mcpPinA2 5
+#define mcpPinB 9
+
+#define SavedPos 100
+
 int i;
 
-MyMessage msg(CHILD_ID_LIGHT, V_LIGHT_LEVEL);
+volatile boolean awakenByInterrupt = false;
+
+/*MyMessage msg(CHILD_ID_LIGHT, V_LIGHT_LEVEL);
 // MyMessage msg(CHILD_ID_LIGHT, V_LEVEL);  
-uint16_t lastlux;
+uint16_t lastlux;*/
 
 // Initialize general message
 void before()
@@ -37,19 +48,59 @@ void before()
     // Set relay to last known state (using eeprom storage)
     digitalWrite(RELAY_PIN[pin], loadState(sensor)?RELAY_ON:RELAY_OFF);
   }
-  pinMode(LED_BUILTIN, OUTPUT);
+  //Serial.println(loadState(SavedPos));
 }
 
 void setup()
 {
-  Wire.begin();
-  lightSensor.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
+  //Wire.begin();
+  //lightSensor.begin(BH1750::ONE_TIME_HIGH_RES_MODE);
+
+  mcp1.begin();      // use default address 0
+  mcp1.setupInterrupts(true,false,LOW);
+  mcp1.pinMode(mcpPinA, INPUT);
+  mcp1.pullUp(mcpPinA, HIGH);  // turn on a 100K pullup internally
+  mcp1.setupInterruptPin(mcpPinA,FALLING);
   
-  digitalWrite(LED_BUILTIN,LOW);
+  //mcp1.pinMode(mcpPinA2, INPUT);
+  //mcp1.pullUp(mcpPinA2, HIGH);  // turn on a 100K pullup internally
+  //mcp1.setupInterruptPin(mcpPinA2,FALLING);
+
+  mcp1.pinMode(mcpPinB, INPUT);
+  mcp1.pullUp(mcpPinB, HIGH);  // turn on a 100K pullup internally
+  mcp1.setupInterruptPin(mcpPinB,FALLING);
+
+  while( ! (mcp1.digitalRead(mcpPinB) && mcp1.digitalRead(mcpPinA) ));
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(PIN_RPI_INT1,INPUT);
+
+  for(int i=0;i<loadState(SavedPos);i++){  
+    delay(400);
+    digitalWrite(LED_BUILTIN,0);
+    delay(400);
+    digitalWrite(LED_BUILTIN,1);
+  }
+  
+  //digitalWrite(LED_BUILTIN,LOW);
+  //delay(1000);
+  //digitalWrite(LED_BUILTIN,HIGH);
+  //delay(1000);
+  //digitalWrite(LED_BUILTIN,LOW);
+
+  //attachInterrupt(digitalPinToInterrupt(PIN_RPI_INT1),intCallBack,CHANGE);
+  
 }
+
+void intCallBack(){
+  awakenByInterrupt = true;
+}
+
 
 void presentation()
 {
+
+  
   // Send the sketch version information to the gateway and Controller
   sendSketchInfo("Utilipy", "0.3");
 
@@ -57,19 +108,68 @@ void presentation()
     // Register all sensors to gw (they will be created as child devices)
     present(sensor, S_BINARY);
   }
-  present(CHILD_ID_LIGHT, S_LIGHT_LEVEL);
+  //present(CHILD_ID_LIGHT, S_LIGHT_LEVEL);
+}
+
+void handleInterrupt(){
+  /*digitalWrite(LED_BUILTIN,0);
+  delay(100);
+  digitalWrite(LED_BUILTIN,1);*/
+  
+  
+  // Get more information from the MCP from the INT
+  uint8_t pin=mcp1.getLastInterruptPin();
+  uint8_t val=mcp1.getLastInterruptPinValue();
+  
+  uint8_t flashes=4; 
+  if(pin==mcpPinA) flashes=1;
+  if(pin==mcpPinB) flashes=2;
+  if(val!=LOW) flashes=3;
+
+  saveState(SavedPos, flashes);
+  
+  // simulate some output associated to this
+  /*for(int i=0;i<4;i++){  
+    delay(400);
+    digitalWrite(LED_BUILTIN,0);
+    delay(400);
+    digitalWrite(LED_BUILTIN,1);
+  }*/
+  //while( ! (mcp1.digitalRead(mcpPinB) && mcp1.digitalRead(mcpPinA) ));
+  
+  awakenByInterrupt=false;
 }
 
 void loop()
 {
-  uint16_t lux = lightSensor.readLightLevel();// Get Lux value
+  //attachInterrupt(digitalPinToInterrupt(PIN_RPI_INT1),intCallBack,CHANGE);
+  
+  // Simulate a deep sleep
+  //while(!awakenByInterrupt);
+  // Or sleep the arduino, this lib is great, if you have it.
+  //digitalWrite(LED_BUILTIN,1);
+  int sleeptrig = smartSleep(digitalPinToInterrupt(PIN_RPI_INT1),CHANGE,30000);
+  //digitalWrite(LED_BUILTIN,0);
+  //Serial.println(sleeptrig);
+  if (sleeptrig == 7){
+    handleInterrupt();
+    digitalWrite(LED_BUILTIN,0);
+    mcp1.digitalRead(mcpPinB);
+    mcp1.digitalRead(mcpPinA);
+    while (1); 
+  }
+  // disable interrupts while handling them.
+  //detachInterrupt(digitalPinToInterrupt(PIN_RPI_INT1));
+  
+   
+  /*uint16_t lux = lightSensor.readLightLevel();// Get Lux value
   if ((lux != lastlux) & (lux != 0)) {
       Serial.println(lux);
       send(msg.set(lux));
       lastlux = lux;
-  }
+  }*/
 
-  delay(2000);
+  
 }
 
 void receive(const MyMessage &message)
