@@ -109,8 +109,49 @@ extern "C"
 #define PIN_RPI2              (25)
 #define PIN_RPI3              (24)
 #define PIN_RPI4              (23)
-#define PIN_RPI_INT1          (7)
-#define PIN_RPI_INT2          (8)
+
+/* 
+ *  MCP OUTPUT
+ *  
+ *  This is optional
+ */
+
+#define MCP1_PIN_A0 0
+#define MCP1_PIN_A1 1
+#define MCP1_PIN_A2 2
+#define MCP1_PIN_A3 3
+#define MCP1_PIN_A4 4
+#define MCP1_PIN_A5 5
+#define MCP1_PIN_A6 6
+#define MCP1_PIN_A7 7
+#define MCP1_PIN_B0 8
+#define MCP1_PIN_B1 9
+#define MCP1_PIN_B2 10
+#define MCP1_PIN_B3 11
+#define MCP1_PIN_B4 12
+#define MCP1_PIN_B5 13
+#define MCP1_PIN_B6 14
+#define MCP1_PIN_B7 15
+
+#define MCP2_PIN_A0 0
+#define MCP2_PIN_A1 1
+#define MCP2_PIN_A2 2
+#define MCP2_PIN_A3 3
+#define MCP2_PIN_A4 4
+#define MCP2_PIN_A5 5
+#define MCP2_PIN_A6 6
+#define MCP2_PIN_A7 7
+#define MCP2_PIN_B0 8
+#define MCP2_PIN_B1 9
+#define MCP2_PIN_B2 10
+#define MCP2_PIN_B3 11
+#define MCP2_PIN_B4 12
+#define MCP2_PIN_B5 13
+#define MCP2_PIN_B6 14
+#define MCP2_PIN_B7 15
+
+#define PIN_RPI_INTA          (7)
+#define PIN_RPI_INTB          (8)
 
 /* 
  *  Buttons
