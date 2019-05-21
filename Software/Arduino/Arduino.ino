@@ -24,13 +24,13 @@ int RELAY_PIN[] = {PIN_T1,PIN_T2,PIN_T3,PIN_T4,PIN_T5,PIN_T6,PIN_T7,PIN_T8};
 Adafruit_MCP23017 mcp1;
 Adafruit_MCP23017 mcp2;
 
-int MCP1_IN_PULLUP_Tab[]  = {MCP1_PIN_A0,MCP1_PIN_A1,MCP1_PIN_A2,MCP1_PIN_A3,MCP1_PIN_A4,MCP1_PIN_A5,MCP1_PIN_A6,MCP1_PIN_A7};
+int MCP1_IN_PULLUP_Tab[]  = {A0,A1,A2,A3,A4,A5,A6,A7};
 int MCP1_IN_PULLDOWN_Tab[]  = {};
-int MCP1_OUT_Tab[] = {MCP1_PIN_B0,MCP1_PIN_B1,MCP1_PIN_B2,MCP1_PIN_B3,MCP1_PIN_B4,MCP1_PIN_B5,MCP1_PIN_B6,MCP1_PIN_B7};
+int MCP1_OUT_Tab[] = {B0,B1,B2,B3,B4,B5,B6,B7};
 
-int MCP2_IN_PULLUP_Tab[]  = {MCP2_PIN_A0,MCP2_PIN_A1,MCP2_PIN_A2,MCP2_PIN_A3,MCP2_PIN_A4,MCP2_PIN_A5,MCP2_PIN_A6,MCP2_PIN_A7};
+int MCP2_IN_PULLUP_Tab[]  = {A0,A1,A2,A3,A4,A5,A6,A7};
 int MCP2_IN_PULLDOWN_Tab[]  = {};
-int MCP2_OUT_Tab[] = {MCP2_PIN_B0,MCP2_PIN_B1,MCP2_PIN_B2,MCP2_PIN_B3,MCP2_PIN_B4,MCP2_PIN_B5,MCP2_PIN_B6,MCP2_PIN_B7};
+int MCP2_OUT_Tab[] = {B0,B1,B2,B3,B4,B5,B6,B7};
                 
 //###########################################
 
@@ -63,12 +63,6 @@ void setup()
   
 }
 
-/*
-void intCallBack(){
-  awakenByInterrupt = true;
-}*/
-
-
 void presentation()
 {
   // Send the sketch version information to the gateway and Controller
@@ -87,8 +81,8 @@ void handleInterrupt(){
   uint8_t val=mcp1.getLastInterruptPinValue();
   
   uint8_t flashes=4; 
-  if(pin==MCP1_PIN_A0) flashes=1;
-  if(pin==MCP1_PIN_A1) flashes=2;
+  if(pin==A0) flashes=1;
+  if(pin==A1) flashes=2;
   if(val!=LOW) flashes=3;
 
   for(int i=0;i<flashes;i++){  
@@ -109,7 +103,7 @@ void loop()
   //Gestion de l'interuption
   if (sleeptrig == 7){
     handleInterrupt();
-    mcp1.digitalRead(MCP1_PIN_A0);
+    mcp1.digitalRead(A0);
   }
 
    
@@ -132,9 +126,9 @@ void receive(const MyMessage &message)
 }
 
 void initMCP(){
-  mcp1.begin();      // use default address 0
-  //mcp2.begin(4);   // use default address 4
   
+  mcp1.begin();      // use default address 0
+
   for (i=0;i<sizeof(MCP1_IN_PULLUP_Tab);i++){
     mcp1.pinMode(MCP1_IN_PULLUP_Tab[i], INPUT);
     mcp1.pullUp(MCP1_IN_PULLUP_Tab[i], HIGH);           // turn on a 100K pullup internally
@@ -151,7 +145,26 @@ void initMCP(){
     mcp1.pinMode(MCP1_OUT_Tab[i], OUTPUT);
   }
 
-//UNCOMMENT and modify to create interupt on MCP  
+//UNCOMMENT and modify to create interupt on MCP1  
   mcp1.setupInterrupts(true,false,LOW);
-  mcp1.setupInterruptPin(MCP1_PIN_A0,FALLING);
+  mcp1.setupInterruptPin(A0,FALLING);
+
+
+  mcp2.begin(4);   // use default address 4
+  
+  for (i=0;i<sizeof(MCP2_IN_PULLUP_Tab);i++){
+    mcp2.pinMode(MCP1_IN_PULLUP_Tab[i], INPUT);
+    mcp2.pullUp(MCP1_IN_PULLUP_Tab[i], HIGH);           // turn on a 100K pullup internally
+    mcp2.digitalRead(MCP1_IN_PULLUP_Tab[i]);             // Reads the MCP to reset leftover interupt
+  }
+  
+  for (i=0;i<sizeof(MCP2_IN_PULLDOWN_Tab);i++){
+    mcp2.pinMode(MCP1_IN_PULLDOWN_Tab[i], INPUT);
+    mcp2.pullUp(MCP1_IN_PULLDOWN_Tab[i], HIGH);           // turn on a 100K pullup internally
+    mcp2.digitalRead(MCP1_IN_PULLDOWN_Tab[i]);             // Reads the MCP to reset leftover interupt
+  }
+  
+  for (i=0;i<sizeof(MCP2_OUT_Tab);i++){
+    mcp2.pinMode(MCP1_OUT_Tab[i], OUTPUT);
+  }
 }
