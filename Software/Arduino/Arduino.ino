@@ -19,7 +19,6 @@ int RELAY_PIN[] = {PIN_T1,PIN_T2,PIN_T3,PIN_T4,PIN_T5,PIN_T6,PIN_T7,PIN_T8};
 
 #define SavedPos 100
 #define SLEEPDELAY 10000
-//############# Config du MCP ###############
 
 Adafruit_MCP23017 mcp1;
 Adafruit_MCP23017 mcp2;
@@ -31,12 +30,7 @@ int MCP1_OUT_Tab[] = {B0,B1,B2,B3,B4,B5,B6,B7};
 int MCP2_IN_PULLUP_Tab[]  = {A0,A1,A2,A3,A4,A5,A6,A7};
 int MCP2_IN_PULLDOWN_Tab[]  = {};
 int MCP2_OUT_Tab[] = {B0,B1,B2,B3,B4,B5,B6,B7};
-                
-//###########################################
 
-int i;
-
-volatile boolean awakenByInterrupt = false;
 
 // Initialize general message
 void before()
@@ -91,7 +85,6 @@ void handleInterrupt(){
     delay(400);
     digitalWrite(LED_BUILTIN,1);
   }
-  awakenByInterrupt=false;
 }
 
 void loop()
@@ -129,19 +122,19 @@ void initMCP(){
   
   mcp1.begin();      // use default address 0
 
-  for (i=0;i<sizeof(MCP1_IN_PULLUP_Tab);i++){
+  for (int i=0;i<sizeof(MCP1_IN_PULLUP_Tab);i++){
     mcp1.pinMode(MCP1_IN_PULLUP_Tab[i], INPUT);
     mcp1.pullUp(MCP1_IN_PULLUP_Tab[i], HIGH);           // turn on a 100K pullup internally
     mcp1.digitalRead(MCP1_IN_PULLUP_Tab[i]);             // Reads the MCP to reset leftover interupt
   }
   
-  for (i=0;i<sizeof(MCP1_IN_PULLDOWN_Tab);i++){
+  for (int i=0;i<sizeof(MCP1_IN_PULLDOWN_Tab);i++){
     mcp1.pinMode(MCP1_IN_PULLDOWN_Tab[i], INPUT);
     mcp1.pullUp(MCP1_IN_PULLDOWN_Tab[i], HIGH);           // turn on a 100K pullup internally
     mcp1.digitalRead(MCP1_IN_PULLDOWN_Tab[i]);             // Reads the MCP to reset leftover interupt
   }
   
-  for (i=0;i<sizeof(MCP1_OUT_Tab);i++){
+  for (int i=0;i<sizeof(MCP1_OUT_Tab);i++){
     mcp1.pinMode(MCP1_OUT_Tab[i], OUTPUT);
   }
 
@@ -152,19 +145,19 @@ void initMCP(){
 
   mcp2.begin(4);   // use default address 4
   
-  for (i=0;i<sizeof(MCP2_IN_PULLUP_Tab);i++){
+  for (int i=0;i<sizeof(MCP2_IN_PULLUP_Tab);i++){
     mcp2.pinMode(MCP1_IN_PULLUP_Tab[i], INPUT);
     mcp2.pullUp(MCP1_IN_PULLUP_Tab[i], HIGH);           // turn on a 100K pullup internally
     mcp2.digitalRead(MCP1_IN_PULLUP_Tab[i]);             // Reads the MCP to reset leftover interupt
   }
   
-  for (i=0;i<sizeof(MCP2_IN_PULLDOWN_Tab);i++){
+  for (int i=0;i<sizeof(MCP2_IN_PULLDOWN_Tab);i++){
     mcp2.pinMode(MCP1_IN_PULLDOWN_Tab[i], INPUT);
     mcp2.pullUp(MCP1_IN_PULLDOWN_Tab[i], HIGH);           // turn on a 100K pullup internally
     mcp2.digitalRead(MCP1_IN_PULLDOWN_Tab[i]);             // Reads the MCP to reset leftover interupt
   }
   
-  for (i=0;i<sizeof(MCP2_OUT_Tab);i++){
+  for (int i=0;i<sizeof(MCP2_OUT_Tab);i++){
     mcp2.pinMode(MCP1_OUT_Tab[i], OUTPUT);
   }
 }
