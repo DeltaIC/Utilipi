@@ -207,6 +207,9 @@ static const uint8_t SCK    = PIN_SPI_SCK;
 static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
 
+// Enable the reset pin
+void enable_reset(void);
+
 #ifdef __cplusplus
 }
 #endif
