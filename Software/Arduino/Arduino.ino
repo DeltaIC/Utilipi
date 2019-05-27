@@ -1,13 +1,15 @@
 #include <Wire.h> 
 #include "Adafruit_MCP23017.h"
 
+#define ANGLE_PAR_FRONT 360/500
+
 Adafruit_MCP23017 mcp1;
 Adafruit_MCP23017 mcp2;
 
-int MCP1_IN_Tab[]  = {A0};
+int MCP1_IN_Tab[]  = {};
 int MCP1_IN_PULLUP_Tab[]  = {};
 int MCP1_OUT_Tab[] = {};
-int MCP1_INTERRUPT_Tab[]  = {A0};
+int MCP1_INTERRUPT_Tab[]  = {};
 
 int MCP2_IN_Tab[]  = {};
 int MCP2_IN_PULLUP_Tab[]  = {};
@@ -22,16 +24,17 @@ void setup()
 {
       
   Serial.begin(115200);
-  Serial.println("Helloooooooooo");
+  Serial.println("Starting...");
 
-  initMCP();
-  
-  pinMode(PIN_RPI_INTA,INPUT);
+  //initMCP();
+
+  pinMode(PIN_RPI2,INPUT);
+  pinMode(PIN_RPI4,INPUT);
   //attachInterrupt(digitalPinToInterrupt(PIN_RPI_INTx), handleInterrupt, polarity)
-  attachInterrupt(digitalPinToInterrupt(PIN_RPI_INTA),handleInterrupt,RISING);
+  attachInterrupt(digitalPinToInterrupt(PIN_RPI4),handleInterrupt,RISING);
 
   // Cleared int flag
-  mcp1.digitalRead(A0);
+  //mcp1.digitalRead(A0);
   
   for (int i=0; i<=sizeof(Transistors_Tab); i++){
     pinMode(Transistors_Tab[i], OUTPUT);
@@ -44,18 +47,16 @@ void setup()
   digitalWrite(PIN_LED2, LOW);
   delay(1000);
   digitalWrite(PIN_LED2, HIGH);
+
+  Serial.println("Ready!");
   
 }
 
 void loop()
 {
   if(interrupt){
-    compteur++;
+    Serial.println(compteur*ANGLE_PAR_FRONT);
     interrupt = false;
-  }
-  if(compteur == 6000){
-    Serial.println(compteur);
-    compteur=0;
   }
 }
 
@@ -68,8 +69,13 @@ void handleInterrupt(){
    * I do not advice to use the getLastInterruptPin() and getLastInterruptPinValue() function 
    * from the adafruit library for high speed interrupt (>1KHz)
    */
-  mcp1.digitalRead(A0);
+  
 
+  if(digitalRead(PIN_RPI2)){
+    compteur++;
+  }else{
+    compteur--;
+  }
   interrupt = true;
 }
 
