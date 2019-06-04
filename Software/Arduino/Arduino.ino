@@ -1,4 +1,3 @@
-//Mise en place My SENSORS
 //#define MY_DEBUG
 
 #define MY_RADIO_NRF5_ESB
