@@ -44,6 +44,10 @@ volatile int angle = 0;
 volatile int nb_pieces = 0;
 
 void setup(){
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  
   Serial.begin(115200);     // non needed if mysensor.h is called
   Serial.println("Starting...");
 
@@ -60,8 +64,6 @@ void setup(){
     digitalWrite(Transistors_Tab[i], HIGH);
   }
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
   delay(500);
   digitalWrite(LED_BUILTIN, HIGH);
 
