@@ -39,11 +39,12 @@ bool TransistorsState_Tab[]={0,0,0,0,0,0,0,0};
 
 // Message d'erreur
 char msg1[]="Pas de bande ou pas trop court";
-char msg2[]="Capteur HS reste à 1 ou copeau bloqué sur le capteur";
+char msg2[]="Capteur HS reste a 1 ou copeau bloque sur le capteur";
 
 // Variable globale
 volatile int angle = 0;
 volatile int nb_pieces = 0;
+volatile unsigned long cadence = 0;
 
 void setup(){
 
@@ -55,6 +56,9 @@ void setup(){
 
   initMCP();
   mcp1.digitalWrite(SORTIE_SECU_OUTIL,LOW);
+  mcp1.digitalWrite(LED_GREEN,LOW);
+  mcp1.digitalWrite(LED_YELLOW,LOW);
+  mcp1.digitalWrite(LED_RED,LOW);
 
   pinMode(ENCODEURA,INPUT);
   pinMode(ENCODEURB,INPUT);
@@ -74,16 +78,14 @@ void setup(){
 }
 
 void loop(){
-  
-  //static int temps=millis();
-  //static int vitesse = 0;
+
   static int defaut = 0;
   static int defaut1 = 0;
   static int defaut2 = 0;
 
   if (defaut!=0 && mcp1.digitalRead(BP_ACQUIT)==0){
+    // la presse est en défaut et attend l'acquittement
     mcp1.digitalWrite(LED_RED,LOW);
-    //Serial.println("Acquittement");
     switch(defaut){
       case 1:
         defaut1++;
@@ -96,25 +98,18 @@ void loop(){
   }
 
   if ((mcp1.digitalRead(BI_MANUEL)==0)&&(defaut==0)){
-    
+    // la presse fonctionne
     if (mcp1.digitalRead(SHUNT_SECU)==0){
       
       if((angle>=ANGLE_BAS-INTERVALLE)&&(angle<=ANGLE_BAS+INTERVALLE)&&(mcp1.digitalRead(CAPTEUR_BANDE)==1)){
         mcp1.digitalWrite(LED_RED,HIGH);
         defaut=1;
-        //Serial.println(msg1);
       } else if((angle>=ANGLE_HAUT-INTERVALLE)&&(angle<=ANGLE_HAUT+INTERVALLE)&&(mcp1.digitalRead(CAPTEUR_BANDE)==0)){
         mcp1.digitalWrite(LED_RED,HIGH);
         defaut=2;
-        //Serial.println(msg2);
       }else{
         mcp1.digitalWrite(SORTIE_SECU_OUTIL,HIGH);
       }
-             
-      /*if((angle>=175)&&(angle<=185)){
-        vitesse = 60000/(temps - millis());
-        temps=millis();
-      }*/
       
     }else{
       // Mode shunt, on laisse l'outil touner
@@ -157,6 +152,7 @@ void Codeur(){
    */
 
   static int front = 0;
+  static unsigned long temps = 0;
 
   if(digitalRead(ENCODEURB)){
     front--;
@@ -167,6 +163,8 @@ void Codeur(){
   // il y a 500 front par tour, on veut une valeur comprise entre 0 et 499
   if(front<0 or front > FRONT_PAR_TOUR-1){
     front=0;
+    cadence = 60000/(millis()-temps);     // nombre de pièce minute
+    temps=millis();
     nb_pieces++;
   }
 
@@ -223,7 +221,11 @@ void serialmsg(int received, int defaut){
             break;
         }
       }
-      break;    
+      break; 
+
+    case 'g':
+      Serial.println(cadence);
+      break;
   }
 }  
 
