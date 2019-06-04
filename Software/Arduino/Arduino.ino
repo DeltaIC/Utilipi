@@ -1,4 +1,10 @@
-//test loic
+//Mise en place My SENSORS
+//#define MY_DEBUG
+
+#define MY_RADIO_NRF5_ESB
+#define MY_RF24_PA_LEVEL RF24_PA_HIGH
+#define MY_NODE_ID 15
+#include <MySensors.h>
 
 #include <Wire.h> 
 #include "Adafruit_MCP23017.h"
@@ -33,7 +39,7 @@ int MCP1_INTERRUPT_Tab[]  = {};
 int MCP2_IN_Tab[]  = {};
 int MCP2_IN_PULLUP_Tab[]  = {};
 int MCP2_OUT_Tab[] = {};
-
+int defaut = 0;
 int Transistors_Tab[] = {PIN_T1,PIN_T2,PIN_T3,PIN_T4,PIN_T5,PIN_T6,PIN_T7,PIN_T8};
 bool TransistorsState_Tab[]={0,0,0,0,0,0,0,0};
 
@@ -77,9 +83,24 @@ void setup(){
 
 }
 
+// Initialize general message
+void before()
+  {
+    NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Pos3dBm;
+  }
+
+void presentation()
+  {
+    // Send the sketch version information to the gateway and Controller
+    sendSketchInfo("TeTou", "1.0");
+    present (nb_pieces,S_CUSTOM);
+    present (cadence,S_CUSTOM);
+    present (defaut,S_CUSTOM);
+    
+  }
+
 void loop(){
 
-  static int defaut = 0;
   static int defaut1 = 0;
   static int defaut2 = 0;
 
@@ -274,3 +295,21 @@ void initMCP(){
     mcp2.pinMode(MCP2_OUT_Tab[i], OUTPUT);
   }
 }
+
+void receive(const MyMessage &message)
+  {
+    // We only expect one type of message from controller. But we better check anyway.
+    if (message.type==V_VAR1) {
+        // Change relay state
+        digitalWrite(nb_pieces,V_VAR1);
+       
+        
+        // Store state in eeprom
+        saveState(message.sensor, message.getBool());
+        // Write some debug info
+        /*Serial.print("Incoming change for sensor:");
+        Serial.print(message.sensor);
+        Serial.print(", New status: ");
+        Serial.println(message.getBool());*/
+        }
+  }
