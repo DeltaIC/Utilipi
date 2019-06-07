@@ -15,11 +15,11 @@
 #define BI_MANUEL         A0            // Actionneur utilisateur
 #define SHUNT_SECU        A1            // Shunt défaut pour réglage
 #define CAPTEUR_BANDE     A2            // Capteur présence bande
-#define LED_GREEN         A3            // à définir
+#define BP_ACQUIT         A3            // à définir
 #define LED_YELLOW        A4            // à définir
 #define LED_RED           A5            // à définir
-#define SORTIE_SECU_OUTIL A6            // SORTIE_SECU_OUTIL (la presse fonctionne si le moteur tourne et embrayé)
-#define BP_ACQUIT         A7            // Acquittement d'une erreur
+#define LED_GREEN         A6            // SORTIE_SECU_OUTIL (la presse fonctionne si le moteur tourne et embrayé)
+#define SORTIE_SECU_OUTIL A7            // Acquittement d'une erreur
 #define ENCODEURA         PIN_RPI4      // Signal A du codeur
 #define ENCODEURB         PIN_RPI2      // Signal B du codeur
 
