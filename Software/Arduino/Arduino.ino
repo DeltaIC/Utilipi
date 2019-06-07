@@ -2,7 +2,7 @@
 
 #define MY_RADIO_NRF5_ESB
 #define MY_RF24_PA_LEVEL RF24_PA_HIGH
-#define MY_NODE_ID 15
+#define MY_NODE_ID 14
 #include <MySensors.h>
 
 #include <Wire.h> 
@@ -27,6 +27,14 @@
 #define ANGLE_BAS       100
 #define ANGLE_HAUT      300
 
+#define CHILD_ID_WORKING    0  
+#define CHILD_ID_CADENCE    1 
+#define CHILD_ID_NBR_PIECE  2 
+
+MyMessage msg_working(CHILD_ID_WORKING, V_STATUS);
+MyMessage msg_cadence(CHILD_ID_CADENCE, V_VAR1);
+MyMessage msg_nbr_piece(CHILD_ID_NBR_PIECE, V_VAR2);
+
 Adafruit_MCP23017 mcp1;
 Adafruit_MCP23017 mcp2;
 
@@ -48,7 +56,7 @@ char msg2[]="Capteur HS reste a 1 ou copeau bloque sur le capteur";
 
 // Variable globale
 volatile int angle = 0;
-volatile int nb_pieces = 0;
+volatile uint32_t nb_pieces = 0;
 volatile unsigned long cadence = 0;
 
 void setup(){
@@ -56,7 +64,7 @@ void setup(){
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   
-  Serial.begin(115200);     // non needed if mysensor.h is called
+  //Serial.begin(115200);     // not needed if mysensor.h is called
   Serial.println("Starting...");
 
   initMCP();
@@ -82,29 +90,16 @@ void setup(){
 
 }
 
-// Initialize general message
-void before()
-  {
-    NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Pos3dBm;
-  }
-
-void presentation()
-  {
-    // Send the sketch version information to the gateway and Controller
-    sendSketchInfo("TeTou", "1.0");
-    present (nb_pieces,S_CUSTOM);
-    present (cadence,S_CUSTOM);
-    present (defaut,S_CUSTOM);
-    
-  }
-
 void loop(){
 
   static int defaut1 = 0;
   static int defaut2 = 0;
+  static uint32_t last_nb_pieces = 0;
+  static unsigned long last_cadence = 0;
+  static bool working = false;
+  static bool last_working = false;
 
   if (defaut!=0 && mcp1.digitalRead(BP_ACQUIT)==0){
-    // la presse est en défaut et attend l'acquittement
     mcp1.digitalWrite(LED_RED,LOW);
     switch(defaut){
       case 1:
@@ -119,13 +114,16 @@ void loop(){
 
   if ((mcp1.digitalRead(BI_MANUEL)==0)&&(defaut==0)){
     // la presse fonctionne
+    working = true;
     if (mcp1.digitalRead(SHUNT_SECU)==0){
       
       if((angle>=ANGLE_BAS-INTERVALLE)&&(angle<=ANGLE_BAS+INTERVALLE)&&(mcp1.digitalRead(CAPTEUR_BANDE)==1)){
         mcp1.digitalWrite(LED_RED,HIGH);
+        working = false;
         defaut=1;
       } else if((angle>=ANGLE_HAUT-INTERVALLE)&&(angle<=ANGLE_HAUT+INTERVALLE)&&(mcp1.digitalRead(CAPTEUR_BANDE)==0)){
         mcp1.digitalWrite(LED_RED,HIGH);
+        working = false;
         defaut=2;
       }else{
         mcp1.digitalWrite(SORTIE_SECU_OUTIL,HIGH);
@@ -158,7 +156,42 @@ void loop(){
     int received = Serial.read();     // On les récupère
     serialmsg(received, defaut);              // Et on les traite
   }
+
+  if (working != last_working) {
+    send(msg_working.set(working));
+    last_working = working;
+  }
+  
+  if (nb_pieces != last_nb_pieces) {
+    send(msg_nbr_piece.set(nb_pieces));
+    last_nb_pieces = nb_pieces;
+  }
+
+  if (cadence != last_cadence) {
+    send(msg_cadence.set(cadence));
+    last_cadence = cadence;
+  }
     
+}
+
+// Initialize general message
+void before(){
+  NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Pos3dBm;
+}
+
+void presentation(){
+  // Send the sketch version information to the gateway and Controller
+  sendSketchInfo("TeTou", "1.0");
+  present(CHILD_ID_WORKING,S_BINARY);
+  present(CHILD_ID_CADENCE,S_CUSTOM);
+  present(CHILD_ID_NBR_PIECE,S_CUSTOM);
+}
+
+void receive(const MyMessage &message){
+  if (message.type==V_VAR2) {
+    // Change nombre piece
+    nb_pieces = uint32_t(atoi(message.data));
+  }
 }
 
 void Codeur(){
@@ -294,21 +327,3 @@ void initMCP(){
     mcp2.pinMode(MCP2_OUT_Tab[i], OUTPUT);
   }
 }
-
-void receive(const MyMessage &message)
-  {
-    // We only expect one type of message from controller. But we better check anyway.
-    if (message.type==V_VAR1) {
-        // Change relay state
-        digitalWrite(nb_pieces,V_VAR1);
-       
-        
-        // Store state in eeprom
-        saveState(message.sensor, message.getBool());
-        // Write some debug info
-        /*Serial.print("Incoming change for sensor:");
-        Serial.print(message.sensor);
-        Serial.print(", New status: ");
-        Serial.println(message.getBool());*/
-        }
-  }
