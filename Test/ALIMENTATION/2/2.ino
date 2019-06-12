@@ -28,6 +28,7 @@ void setup(){
 }
 
 void loop(){
+  delay(100000);
 }
 
 void initMCP(){
