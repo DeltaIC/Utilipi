@@ -210,6 +210,9 @@ static const uint8_t SCL = PIN_WIRE_SCL;
 // Enable the reset pin
 void enable_reset(void);
 
+// Disable the NFC pin / enable GPIO instead for pin (9)(10)
+void disable_nfc(void);
+
 #ifdef __cplusplus
 }
 #endif

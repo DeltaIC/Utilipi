@@ -123,4 +123,15 @@ void enable_reset(void){
   }
 }
 
+// disable nfc / enable gpio (09)(10)
+void disable_nfc(void){
+  if (NRF_UICR->NFCPINS == 0xFFFFFFFF){
+      NRF_NVMC->CONFIG = NVMC_CONFIG_WEN_Wen << NVMC_CONFIG_WEN_Pos;
+      while (NRF_NVMC->READY == NVMC_READY_READY_Busy){}
+      NRF_UICR->NFCPINS = 0xFFFFFFFE;
+      NRF_NVMC->CONFIG = NVMC_CONFIG_WEN_Ren << NVMC_CONFIG_WEN_Pos;
+      while (NRF_NVMC->READY == NVMC_READY_READY_Busy){}
+  }
+}
+
 #endif
