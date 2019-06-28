@@ -54,39 +54,50 @@ extern "C"
 #define NUM_ANALOG_OUTPUTS   (8u)
 
 /* 
- *  LEDs
+ * Analog ports
  *  
- *  This is optional
- *  
- *  With My Sensors, you can use
- *  hwPinMode() instead of pinMode()
- *  hwPinMode() allows to use advanced modes like OUTPUT_H0H1 to drive LEDs.
- *  https://github.com/mysensors/MySensors/blob/development/drivers/NRF5/nrf5_wiring_constants.h
- *
+ * If you change g_APinDescription, replace AIN0 with
+ * port numbers mapped by the g_APinDescription Array.
+ * You can add AIN0 to the g_APinDescription Array if
+ * you want provide analog ports MCU independed, you can add
+ * AIN0..AIN7 to your custom g_APinDescription Array
+ * defined in MyBoardNRF5.cpp
  */
-#define PIN_LED1                (20)
-#define PIN_LED2                (19)
-#define LED_BUILTIN          PIN_LED1
+static const uint8_t A0  = ADC_A0;
+static const uint8_t A1  = ADC_A1;
+static const uint8_t A2  = ADC_A2;
+static const uint8_t A3  = ADC_A3;
+static const uint8_t A4  = ADC_A4;
+static const uint8_t A5  = ADC_A5;
+static const uint8_t A6  = ADC_A6;
+static const uint8_t A7  = ADC_A7;
 
-/* 
- *  Buttons
+/***************************************/
+/*************Function******************/
+/***************************************/
+void enable_reset(void);    // Enable the reset pin
+void disable_nfc(void);     // Disable the NFC pin / enable GPIO instead for pin (9)(10)
+
+/* CHOOSE YOUR BOARD
  *  
- *  This is optional
+ * --> UTILIPI_V2
+ * --> UTILIPI_MINI_V1
  */
-#define PIN_BUTTON1             (22)
+#define UTILIPI_MINI_V1
 
-/* 
- *  Transistor output
- *  
- *  This is optional
- *  
- *  With My Sensors, you can use
- *  hwPinMode() instead of pinMode()
- *  hwPinMode() allows to use advanced modes like OUTPUT_H0H1 to drive LEDs.
- *  https://github.com/mysensors/MySensors/blob/development/drivers/NRF5/nrf5_wiring_constants.h
- *
- */
+#ifdef UTILIPI_V2 
 
+/***************************************/
+/*************LED & BUTTON**************/
+/***************************************/
+#define PIN_LED1              (20)
+#define PIN_LED2              (19)
+#define LED_BUILTIN           PIN_LED1
+#define PIN_BUTTON1           (22)
+
+/***************************************/
+/**************TRANSISTOR***************/
+/***************************************/
 #define PIN_T1                (4)
 #define PIN_T2                (3)
 #define PIN_T3                (2)
@@ -96,12 +107,9 @@ extern "C"
 #define PIN_T7                (28)
 #define PIN_T8                (27)
 
-/* 
- *  MCP OUTPUT
- *  
- *  This is optional
- */
-
+/***************************************/
+/******************MCP******************/
+/***************************************/
 #define A0 0
 #define A1 1
 #define A2 2
@@ -118,59 +126,26 @@ extern "C"
 #define B5 13
 #define B6 14
 #define B7 15
-
 #define PIN_RPI_INTA          (7)
 #define PIN_RPI_INTB          (8)
 
-/* 
- * Analog ports
- *  
- * If you change g_APinDescription, replace AIN0 with
- * port numbers mapped by the g_APinDescription Array.
- * You can add AIN0 to the g_APinDescription Array if
- * you want provide analog ports MCU independed, you can add
- * AIN0..AIN7 to your custom g_APinDescription Array
- * defined in MyBoardNRF5.cpp
- *
-static const uint8_t A0  = ADC_A0;
-static const uint8_t A1  = ADC_A1;
-static const uint8_t A2  = ADC_A2;
-static const uint8_t A3  = ADC_A3;
-static const uint8_t A4  = ADC_A4;
-static const uint8_t A5  = ADC_A5;
-static const uint8_t A6  = ADC_A6;
-static const uint8_t A7  = ADC_A7;*/
-
-/* 
- *  To RPI OUTPUT
- *  
- *  This is optional
- */
+/***************************************/
+/************PIN NRF -> RPi*************/
+/***************************************/
 #define PIN_RPI1              (26)
 #define PIN_RPI2              (25)
 #define PIN_RPI3              (24)
 #define PIN_RPI4              (23)
 
-/*
- * Serial interfaces
- * 
- * RX and TX are required.
- * If you have no serial port, use unused pins
- * CTS and RTS are optional.
- */
+/***************************************/
+/****************UART*******************/
+/***************************************/
 #define PIN_SERIAL_RX       (17)
 #define PIN_SERIAL_TX       (18)
-// #define SERIAL_CTS      (13)
-// #define SERIAL_RTS      (14)
 
-/*
- * SPI Interfaces
- * 
- * This is optional
- * 
- * If SPI is defined MISO, MOSI, SCK are required
- * SS is optional and can be used in your sketch.
- */
+/***************************************/
+/*****************SPI*******************/
+/***************************************/
 #define SPI_INTERFACES_COUNT 1
 
 #define PIN_SPI_MISO         (11)
@@ -191,27 +166,68 @@ static const uint8_t MOSI   = PIN_SPI_MOSI;
 static const uint8_t MISO   = PIN_SPI_MISO;
 static const uint8_t SCK    = PIN_SPI_SCK;
 
-/*
- * Wire Interfaces
- *
- * This is optional
- */
+/***************************************/
+/*****************I2C*******************/
+/***************************************/
 #define WIRE_INTERFACES_COUNT 1
 
 #define PIN_WIRE_SDA         (14u)
 #define PIN_WIRE_SCL         (13u)
 
-//#define WIRE_SDA1        (16u)
-//#define WIRE_SCL1        (17u)
-
 static const uint8_t SDA = PIN_WIRE_SDA;
 static const uint8_t SCL = PIN_WIRE_SCL;
 
-// Enable the reset pin
-void enable_reset(void);
+#endif
 
-// Disable the NFC pin / enable GPIO instead for pin (9)(10)
-void disable_nfc(void);
+#ifdef UTILIPI_MINI_V1 
+
+/***************************************/
+/*************LED & BUTTON**************/
+/***************************************/
+#define PIN_LED              (15)
+#define LED_BUILTIN          PIN_LED
+
+/***************************************/
+/**************TRANSISTOR***************/
+/***************************************/
+#define PIN_T1                (12)
+#define PIN_T2                (11)
+#define PIN_T3                (14)
+#define PIN_T4                (13)
+
+/***************************************/
+/**********PROTECTED INPUT**************/
+/***************************************/
+#define PIN_INPUT_1           (20)
+#define PIN_INPUT_2           (19)
+#define PIN_INPUT_3           (18)
+#define PIN_INPUT_4           (17)
+#define PIN_INPUT_5           (16)
+#define PIN_INPUT_6           (8)
+#define PIN_INPUT_7           (7)
+#define PIN_INPUT_8           (6)
+#define PIN_INPUT_9           (5)
+#define PIN_INPUT_10          (4)
+#define PIN_INPUT_11          (3)
+#define PIN_INPUT_12          (2)
+
+/***************************************/
+/****************UART*******************/
+/***************************************/
+#define PIN_SERIAL_RX       (25)
+#define PIN_SERIAL_TX       (26)
+
+/***************************************/
+/*****************SPI*******************/
+/***************************************/
+#define SPI_INTERFACES_COUNT 0
+
+/***************************************/
+/*****************I2C*******************/
+/***************************************/
+#define WIRE_INTERFACES_COUNT 0
+
+#endif
 
 #ifdef __cplusplus
 }
