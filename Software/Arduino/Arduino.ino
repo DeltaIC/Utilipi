@@ -26,17 +26,14 @@ void setup(){
 }
 
 void loop(){
-
-  for (int i=0; i<=sizeof(Transistors_Tab); i++){
-    digitalWrite(Transistors_Tab[i], HIGH);
-  }
-  digitalWrite(LED_BUILTIN, digitalRead(Input_Tab[0]));
-  delay(1000);
-
-  for (int i=0; i<=sizeof(Transistors_Tab); i++){
-    digitalWrite(Transistors_Tab[i], LOW);
-  }
-  digitalWrite(LED_BUILTIN, digitalRead(Input_Tab[0]));
-  delay(1000);
+  static unsigned long temps = millis();
+  digitalWrite(LED_BUILTIN, HIGH);
+  while((millis()-temps)<1000);
+  //delay(1000);
+  temps = millis();
+  digitalWrite(LED_BUILTIN, LOW);
+  while((millis()-temps)<1000);
+  //delay(1000);
+  temps = millis();
     
 }
