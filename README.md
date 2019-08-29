@@ -17,7 +17,7 @@ Features
 ---
 
 #### IO EXTENDER
-There is 32 channels I/O included 16 which can work with interrupt service thank to an I/O expender on I²C bus.
+There is 32 channels I/O included 16 which can work with interrupt service thank to an I/O expender on I²C bus .
 
 #### ADC
 The Analog to Digital Converter have 4 channel 10V max and 4 channel with input selection. The input selection works either for 10V max or 4-20mA loop.
